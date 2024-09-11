@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBiosAI</title>
+    <style>
+        /* Aturan animasi fade-in */
+        .fade-in {
+            opacity: 0;
+            animation: fadeInAnimation 2s forwards; /* Durasi 2 detik */
+        }
+
+        /* Keyframes untuk animasi fade-in */
+        @keyframes fadeInAnimation {
+            0% { opacity: 0; }   /* Awal tidak terlihat */
+            100% { opacity: 1; } /* Akhir sepenuhnya terlihat */
+        }
+
+        #loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .header, form {
+            opacity: 0; /* Mulai dari tidak terlihat */
+        }
+
+        .loader-bar-container {
+            width: 120px;
+            height: 10px;
+            background-color: #0a059d;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar {
+            width: 30px;
+            height: 10px;
+            background-color: #b20606;
+            border-radius: 5px;
+            position: absolute;
+            animation: moveSideways 2s ease-in-out infinite;
+        }
+
+        @keyframes moveSideways {
+            0% { left: 0; }
+            50% { left: 90px; }
+            100% { left: 0; }
+        }
+        /* Gaya CSS Umum */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Mencegah scroll horizontal */
+            box-sizing: border-box; /* Menetapkan box-sizing default */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1b0ada;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background-image: url('/static/header3.JPG'); /* Ganti dengan path gambar Anda */
+            background-size: cover; /* Menyesuaikan ukuran gambar */
+            background-position: center; /* Posisi gambar di tengah */
+            background-repeat: no-repeat; /* Mencegah gambar diulang */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgb(255, 255, 255);
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            top: 0;
+        }
+
+        .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .big-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .small-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: rgb(255, 255, 255);
+            margin-top: 5px;
+        }
+
+        /* Gaya Form */
+        form {
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            background: #4847475c;
+            color: #000;
+        }
+
+        .intro {
+            width: 100%; /* Supaya intro mengisi lebar penuh di atas form */
+            text-align: center;
+            background: transparent; /* Transparan agar mengikuti background form */
+            padding: 20px;
+        }
+
+        .intro h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color:rgb(255, 255, 255);
+        }
+
+        .intro p {
+            font-size: 18px;
+            color: #fff; /* Ubah warna teks menjadi putih */
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+            color:rgb(255, 255, 255);
+        }
+
+        .form-column {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            box-shadow: none;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 5px solid #484e48;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50; /* Warna hijau untuk tombol */
+            color: white;
+            padding: 20px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Tambahkan bayangan */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Fullscreen Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            z-index: 1000;
+            display: none; /* Tersembunyi secara default */
+        }
+
+        .loading-overlay .loading-spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .status-line {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #FFFFFF;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #282c34;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preload Animasi -->
+    <div id="loading">
+        <div class="loader-bar-container">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='bios.PNG') }}" alt="Logo" class="logo">
+        <h1 class="big-title">Welcome to SmartBiosAI</h1>
+        <small class="small-text">Smart Farms, Smarter Future</small>
+    </div>
+
+    <!-- Formulir Upload -->
+    <form id="upload-form" action="/process-video" method="POST" enctype="multipart/form-data">
+        <!-- Intro Section di dalam Form -->
+        <div class="intro">
+            <h2>Quick Seed Counting with Aerial Video</h2>
+            <p>Our system leverages aerial video technology to perform rapid and accurate seed counting. By capturing high-resolution video footage from drones, the system applies advanced image processing algorithms to analyze the visual data. This allows for real-time counting of seeds over large agricultural areas with remarkable precision. The use of aerial video significantly reduces the time and effort required compared to manual counting methods, enhancing efficiency and accuracy in agricultural operations. This innovative approach not only streamlines seed management but also supports better planning and optimization of crop production</p>
+        </div>
+
+        <!-- Kolom Form -->
+        <div class="form-column">
+            <label for="video">Upload Your Video:</label>
+            <input type="file" id="video" name="video" required>
+        </div>
+
+        <div class="form-column">
+            <label for="model">Upload Your Model:</label>
+            <input type="file" id="model" name="model" required>
+        </div>
+
+        <div class="form-column">
+            <label for="output_video">Your Output Video Name:</label>
+            <input type="text" id="output_video" name="output_video" required>
+        </div>
+
+        <div class="form-column">
+            <label for="line_coords">Line Coord (x1,y1,x2,y2):</label>
+            <input type="text" id="line_coords" name="line_coords" required>
+        </div>
+
+        <div class="form-column">
+            <label for="label_count">Label Object in Video</label>
+            <input type="text" id="label_count" name="label_count" required>
+        </div>
+
+        <div class="form-column">
+            <label for="confidence_threshold">Threshold Confidence:</label>
+            <input type="number" step="0.01" id="confidence_threshold" name="confidence_threshold" required>
+        </div>
+
+        <div class="form-column">
+            <label for="bagi_slice">Number of Slices:</label>
+            <input type="number" id="bagi_slice" name="bagi_slice" required>
+        </div>
+
+        <div class="form-column" style="width: 100%; text-align: center;">
+            <button type="submit">Start Process</button> <!-- Tombol hijau, tanpa background form putih -->
+        </div>
+    </form>
+
+    <!-- Fullscreen Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing Video... Please wait.</div>
+        <div class="status-line" id="status-line">Menunggu pembaruan status...</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 SmartBiosAI | Biosystems Engineering. All rights reserved.</p>
+    </div>
+
+    <script>
+        window.addEventListener("load", function() {
+            var loading = document.getElementById("loading");
+            setTimeout(function() {
+                loading.style.display = "none";
+        
+                // Tambahkan class 'fade-in' ke elemen yang ingin dianimasikan
+                document.querySelector('.header').classList.add('fade-in');
+                document.querySelector('form').classList.add('fade-in');
+            },2000);
+        });
+        
+
+        // Menangani Form Submit dengan Status Loading dan Pembaruan
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();  // Mencegah form dari reload
+        
+            const overlay = document.getElementById('loading-overlay');
+            const statusLine = document.getElementById('status-line');
+            const formData = new FormData(this);
+        
+            overlay.style.display = 'flex';  // Tampilkan overlay
+            statusLine.textContent = 'Uploading video and model';  // Status awal
+        
+            // Mengatur EventSource untuk status update (mulai sebelum pengiriman form)
+            const evtSource = new EventSource('/status');
+            evtSource.onmessage = function(event) {
+                const status = JSON.parse(event.data);
+                if (status.completed) {
+                    statusLine.textContent = status.step;
+                    evtSource.close();  // Tutup EventSource ketika selesai
+                    setTimeout(() => {
+                        overlay.style.display = 'none';  // Sembunyikan overlay setelah proses selesai
+                    }, 2000);  // Tampilkan selama 2 detik setelah selesai
+                } else {
+                    statusLine.textContent = status.step;
+                }
+            };
+        
+            // Kirim data form menggunakan fetch setelah memulai EventSource
+            fetch('/process-video', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                if (data.output_video_path) {
+                    statusLine.textContent = 'Video berhasil diproses. Unduh hasilnya: ' + data.output_video_path;
+                } else {
+                    statusLine.textContent = 'Terjadi kesalahan saat memproses video.';
+                }
+            }).catch(error => {
+                statusLine.textContent = 'Terjadi kesalahan saat mengunggah video dan model.';
+                console.error('Error:', error);
+            });
+        });
+        
+    </script>
+</body>
+</html>

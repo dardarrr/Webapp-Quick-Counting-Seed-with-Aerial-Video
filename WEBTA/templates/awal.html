@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBiosAI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('/static/body2.JPG'); /* Gunakan path gambar yang sesuai */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Animasi loading horizontal */
+        #loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loader-bar-container {
+            width: 120px;
+            height: 10px;
+            background-color: #0a059d;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar {
+            width: 30px;
+            height: 10px;
+            background-color: #b20606;
+            border-radius: 5px;
+            position: absolute;
+            animation: moveSideways 2s ease-in-out infinite;
+        }
+
+        @keyframes moveSideways {
+            0% { left: 0; }
+            50% { left: 90px; }
+            100% { left: 0; }
+        }
+
+        /* Konten utama dengan animasi */
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* Latar belakang putih transparan */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            opacity: 0; /* Awalnya tersembunyi */
+            transition: opacity 1s ease-in-out; /* Efek animasi */
+        }
+
+        .show-container {
+            opacity: 1; /* Konten tampil */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .slogan {
+            font-size: 1.5rem;
+            color: #007BFF;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0; /* Awalnya tidak terlihat */
+            transition: opacity 1s ease-in-out 1.5s; /* Efek animasi dengan delay */
+        }
+
+        button.show-button {
+            opacity: 1; /* Muncul */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        img {
+            max-width: 100px; /* Sesuaikan ukuran logo */
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animasi loading -->
+    <div id="loading">
+        <div class="loader-bar-container">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- Konten utama -->
+    <div class="container">
+        <img src="{{ url_for('static', filename='bios.PNG') }}" alt="Logo Teknik Biosistem">
+        <h1>Welcome to SmartBiosAI</h1>
+        <div class="slogan">Smart Farms, Smarter Future</div>
+        <p>Click the button below to continue</p>
+        <form action="/upload">
+            <button type="submit">Start</button>
+        </form>
+    </div>
+
+    <script>
+        // Sembunyikan loading setelah beberapa detik dan tampilkan halaman utama
+        setTimeout(function() {
+            document.getElementById("loading").style.display = "none";
+            document.querySelector(".container").classList.add("show-container"); // Tampilkan konten
+            
+            // Tampilkan tombol setelah konten muncul dengan jeda waktu
+            setTimeout(function() {
+                document.querySelector("button").classList.add("show-button"); // Tampilkan tombol
+            }, 1000); // Delay 1 detik setelah konten muncul
+        }, 3000); // 3000ms = 3 detik (Anda bisa sesuaikan durasinya)
+    </script>
+</body>
+</html>
